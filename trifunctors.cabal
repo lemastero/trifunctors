@@ -1,0 +1,62 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 4dc094acde35e35a73ae99e3c97215c8ff4c16aa1db0f14b6f0c12a4ba2a0753
+
+name:           trifunctors
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/lemastero/trifunctors#readme>
+homepage:       https://github.com/lemastero/trifunctors#readme
+bug-reports:    https://github.com/lemastero/trifunctors/issues
+author:         Piotr Paradzinski
+maintainer:     piotr.paradzinski@gmail.com
+copyright:      BSD
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/lemastero/trifunctors
+
+library
+  exposed-modules:
+      Lib
+  other-modules:
+      Paths_trifunctors
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+  default-language: Haskell2010
+
+executable trifunctors-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_trifunctors
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , trifunctors
+  default-language: Haskell2010
+
+test-suite trifunctors-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_trifunctors
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , trifunctors
+  default-language: Haskell2010
