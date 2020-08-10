@@ -59,4 +59,5 @@ test-suite trifunctors-test
   build-depends:
       base >=4.7 && <5
     , trifunctors
+    , hspec
   default-language: Haskell2010
