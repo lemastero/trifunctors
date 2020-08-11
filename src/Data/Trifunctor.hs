@@ -1,4 +1,16 @@
-module Data.Trifunctor where
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE TypeSynonymInstances #-}
+
+module Data.Trifunctor (
+  Joker,
+  Clown,
+  Bard,
+  Trifunctor,
+  Fool,
+  Nifunctor,
+  CurriedRev
+  )
+  where
 
 -- Joker is a functor on third type parameter for type with 3 type parameters
 -- Laws
@@ -34,6 +46,10 @@ class Bard f where
 class (Joker f, Clown f, Bard f) => Trifunctor f where
   timap :: (ee -> e) -> (a -> aa) -> (r -> rr) -> f e a r -> f ee aa rr
 
+type CurriedRev b c a = (c -> b) -> a
+
+--instance Trifunctor CurriedRev where
+--  timap f g h fa = \k -> h (fa (f . k . g))
 
 -- Laws
 -- @'lcontramap' 'id' ≡ 'id'@
@@ -52,3 +68,8 @@ class Fool f where
 -- @'nimap' (f '.' g) (h '.' i) (j '.' k) ≡ 'dimap' g i j '.' 'dimap' f h k@
 class (Joker f, Fool f, Bard f) => Nifunctor f where
   nimap :: (ee -> e) -> (aa -> a) -> (r -> rr) -> f e a r -> f ee aa rr
+
+type Function2 b c a = b -> c -> a
+
+--instance Nifunctor Function2 where
+--  nimap f g h fa = \ee -> \aa -> h (fa (f ee) (g aa))
