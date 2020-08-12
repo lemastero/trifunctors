@@ -40,16 +40,28 @@ class Bard f where
 --   e -> (a, r)
 --   e -> IO (a, r)
 --   (a -> e) -> r
+--   e -> Either [a] r
+--   e -> ([a], r)
+
 -- Laws
 -- @'timap' 'id' 'id' 'id' ≡ 'id'@
 -- @'dimap' (f '.' g) (h '.' i) (j '.' k) ≡ 'dimap' g h j '.' 'dimap' f i k@
 class (Joker f, Clown f, Bard f) => Trifunctor f where
   timap :: (ee -> e) -> (a -> aa) -> (r -> rr) -> f e a r -> f ee aa rr
 
-type CurriedRev b c a = (c -> b) -> a
+newtype CurriedRev b c a = CurriedRev { run :: (c -> b) -> a }
 
---instance Trifunctor CurriedRev where
---  timap f g h fa = \k -> h (fa (f . k . g))
+instance Joker CurriedRev where
+  rmap h (CurriedRev fa) = CurriedRev (\k -> h (fa k))
+
+instance Bard CurriedRev where
+  rcontramap f (CurriedRev fa) = CurriedRev (\k -> fa (f . k))
+
+instance Clown CurriedRev where
+  lmap g (CurriedRev fa) = CurriedRev (\k -> fa (k . g))
+
+instance Trifunctor CurriedRev where
+  timap f g h (CurriedRev fa) = CurriedRev (\k -> h (fa (f . k . g)))
 
 -- Laws
 -- @'lcontramap' 'id' ≡ 'id'@
