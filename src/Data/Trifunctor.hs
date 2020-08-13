@@ -81,7 +81,16 @@ class Fool f where
 class (Joker f, Fool f, Bard f) => Nifunctor f where
   nimap :: (ee -> e) -> (aa -> a) -> (r -> rr) -> f e a r -> f ee aa rr
 
-type Function2 b c a = b -> c -> a
+newtype Function2 b c a = Function2 { runFun2 :: b -> c -> a }
 
---instance Nifunctor Function2 where
---  nimap f g h fa = \ee -> \aa -> h (fa (f ee) (g aa))
+instance Joker Function2 where
+  rmap h (Function2 fa) = Function2 ( \ee -> \aa -> h (fa ee aa) )
+
+instance Fool Function2 where
+  lcontramap g (Function2 fa) = Function2 ( \ee -> \aa -> fa ee (g aa) )
+
+instance Bard Function2 where
+  rcontramap f (Function2 fa) = Function2 ( \ee -> \aa -> fa (f ee) aa )
+
+instance Nifunctor Function2 where
+  nimap f g h (Function2 fa) = Function2 ( \ee -> \aa -> h (fa (f ee) (g aa)) )
