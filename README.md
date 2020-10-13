@@ -1,6 +1,6 @@
 [![Build Status](https://github.com/lemastero/trifunctors/workflows/Haskell%20CI/badge.svg?branch=master)](https://github.com/lemastero/trifunctors/actions?query=workflow%3A%22Haskell+CI%22+branch%3Amaster)
 
-# Trivariant
+# Trifunctors
 
 Explore the superpowers of typeclass abstracting over computation that can produce result or error (combining capabilities of Contravarinat functor with Bifunctor) or that require more than one input and produce single output.
 
