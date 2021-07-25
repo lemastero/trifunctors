@@ -21,7 +21,9 @@ source-repository head
   location: https://github.com/lemastero/trifunctors
 
 library
-  exposed-modules: Data.Trifunctor
+  exposed-modules:
+    Data.Zifunctor
+    Data.UnifyBifunctorProfunctor
   hs-source-dirs:  src
   build-depends:
       base >=4.7 && <5
