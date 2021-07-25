@@ -15,7 +15,6 @@ build-type:     Simple
 extra-source-files:
     .gitignore
     README.md
-    ChangeLog.md
 
 source-repository head
   type: git
