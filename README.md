@@ -2,7 +2,48 @@
 
 # Trifunctors
 
-Explore the superpowers of typeclass abstracting over computation that can produce result or error (combining capabilities of Contravarinat functor with Bifunctor) or that require more than one input and produce single output.
+## Data.UnifyBifunctorProfunctor
+
+Explore encoding of Bifunctor and Profunctor
+
+```Haskell
+class (FunctorLeft f, FunctorRight f) => Bifunctor f where
+  bimap :: (a -> aa) -> (b -> bb) -> f a b -> f aa bb
+  bimap f g = lmap f . rmap g
+
+class (ContravariantLeft p, FunctorRight p) => Profunctor p where
+  dimap :: (aa -> a) -> (b -> bb) -> p a b -> p aa bb
+  dimap f g = lcontramap f . rmap g
+```
+
+using 3 typeclass'es:
+
+```Haskell
+class FunctorRight f where
+  rmap :: (b -> bb) -> f a b -> f a bb
+
+class FunctorLeft f where
+  lmap :: (a -> aa) -> f a b -> f aa b
+
+class ContravariantLeft f where
+  lcontramap :: (aa -> a) -> f a b -> f aa b
+```
+
+that is more modular:
+- reveal that rmap in Profunctor and Bifunctor is the same thing
+- split laws into into each typeclass
+
+## Data.Zifunctor
+
+Push this idea to types with 3 type arguments. This leads to Zifunctor abstraction
+that can be used to describe calculations that can fail with aa or succeed with rr
+and require input of type e.
+
+```Haskell
+class (FunctorLeft f, FunctorRight f, ContravariantRight f) => Zifunctor f where
+  zimap :: (ee -> e) -> (a -> aa) -> (r -> rr) -> f e a r -> f ee aa rr
+```
+
 
 ## Related projects
 * Originally idea was [encoded in Scala in lemastero/Triglav](https://github.com/lemastero/Triglav/blob/master/src/main/scala/Triglav/face3/Trifunctor.scala)
