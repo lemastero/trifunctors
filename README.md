@@ -4,6 +4,30 @@
 
 ## Data.UnifyBifunctorProfunctor
 
+```mermaid
+classDiagram
+   FunctorLeft <|-- Bifunctor
+   FunctorRight <|-- Bifunctor
+   FunctorRight <|-- Profunctor
+   ContravariantLeft <|-- Profunctor
+   
+   class FunctorLeft {
+     ) lmap :: (a -> aa) -> f a b -> f aa b
+   }
+   class FunctorRight {
+     ) rmap :: (b -> bb) -> f a b -> f a bb
+   }
+   class Bifunctor {
+     ) bimap :: (a -> aa) -> (b -> bb) -> f a b -> f aa bb
+   }
+   class ContravariantLeft {
+     ) lcontramap :: (aa -> a) -> f a b -> f aa b
+   }
+   class Profunctor {
+     ) dimap :: (aa -> a) -> (b -> bb) -> p a b -> p aa bb
+   }
+```
+
 Explore encoding of Bifunctor and Profunctor
 
 ```Haskell
