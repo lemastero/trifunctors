@@ -8,6 +8,7 @@ homepage:       https://github.com/lemastero/trifunctors#readme
 bug-reports:    https://github.com/lemastero/trifunctors/issues
 author:         Piotr Paradzinski - lemastero
 maintainer:     Piotr Paradzinski <piotr.paradzinski@gmail.com>
+stability:      experimental
 copyright:      BSD
 license:        BSD3
 license-file:   LICENSE
@@ -24,9 +25,13 @@ library
   exposed-modules:
     Data.Zifunctor
     Data.UnifyBifunctorProfunctor
+  ghc-options: -Wall -O2 -Wno-trustworthy-safe -Wno-star-is-type
   hs-source-dirs:  src
   build-depends:
       base >=4.7 && <5
+      , bifunctors    ^>= 6
+      , profunctors    ^>= 6
+      , contravariant ^>= 1.6
   default-language: Haskell2010
 
 test-suite trifunctors-test

@@ -1,15 +1,18 @@
 {-# LANGUAGE FlexibleInstances #-}
 
 module Data.Zifunctor (
-  FunctorRight,
+  FunctorLeft(..),
+  FunctorRight(..),
+  ContravariantRight(..),
   Joker,
   Clown,
   Bard,
-  Zifunctor,
+  Zifunctor(..),
+  CurriedRev,
   ContravariantLeft,
   Fool,
   Nifunctor,
-  CurriedRev
+  Trifunctor(..)
   )
   where
 
@@ -56,9 +59,19 @@ newtype Bard f e a r = Bard { runBard :: f e }
 
 -- Laws
 -- @'zimap' 'id' 'id' 'id' ≡ 'id'@
--- @'dimap' (f '.' g) (h '.' i) (j '.' k) ≡ 'dimap' g h j '.' 'dimap' f i k@
+-- @'zimap' (f '.' g) (h '.' i) (j '.' k) ≡ 'zimap' g h j '.' 'zimap' f i k@
 class (FunctorLeft f, FunctorRight f, ContravariantRight f) => Zifunctor f where
   zimap :: (ee -> e) -> (a -> aa) -> (r -> rr) -> f e a r -> f ee aa rr
+  zimap f g h = rmap h . lmap g . rcontramap f
+
+  bimap :: (a -> aa) -> (r -> rr) -> f e a r -> f e aa rr
+  bimap = zimap id
+
+  dimapLeft :: (ee -> e) -> (a -> aa) -> f e a r -> f ee aa r
+  dimapLeft f g = zimap f g id
+
+  dimap :: (ee -> e) -> (r -> rr) -> f e a r -> f ee a rr
+  dimap f = zimap f id
 
 newtype CurriedRev b c a = CurriedRev { run :: (c -> b) -> a }
 
@@ -73,6 +86,15 @@ instance FunctorLeft CurriedRev where
 
 instance Zifunctor CurriedRev where
   zimap f g h (CurriedRev fa) = CurriedRev (\k -> h (fa (f . k . g)))
+
+-- TODO instance a -> Either b c
+-- TODO instance a -> (b, c)
+-- TODO instance a -> IO (b, c)
+-- TODO instance Optics Get
+
+---------------
+-- NIFUNCTOR --
+---------------
 
 -- Laws
 -- @'lcontramap' 'id' ≡ 'id'@
@@ -94,6 +116,7 @@ newtype Fool f e a r = Fool { runFool :: f e }
 -- @'nimap' (f '.' g) (h '.' i) (j '.' k) ≡ 'dimap' g i j '.' 'dimap' f h k@
 class (FunctorRight f, ContravariantLeft f, ContravariantRight f) => Nifunctor f where
   nimap :: (ee -> e) -> (aa -> a) -> (r -> rr) -> f e a r -> f ee aa rr
+  nimap f g h = rmap h . lcontramap g . rcontramap f
 
 newtype Function2 b c a = Function2 { runFun2 :: b -> c -> a }
 
@@ -108,3 +131,34 @@ instance ContravariantRight Function2 where
 
 instance Nifunctor Function2 where
   nimap f g h (Function2 fa) = Function2 ( \ee -> h . fa (f ee) . g )
+
+-- TODO instance Either a b -> c
+-- TODO instance (a, b) -> c
+-- TODO instance Optics Set
+
+----------------
+-- Trifunctor --
+----------------
+
+-- Laws
+-- @'fstMap' 'id' ≡ 'id'@
+-- @'fstMap' (f '.' g) ≡ 'fstMap' f '.' 'fstMap' g@
+class FstFunctor f where
+  fstmap :: (e -> ee) -> f e a r -> f ee a r
+
+class (FstFunctor f, FunctorLeft f, FunctorRight f) => Trifunctor f where
+  trimap :: (e -> ee) -> (a -> aa) -> (r -> rr) -> f e a r -> f ee aa rr
+  trimap f g h = rmap h . lmap g . fstmap f
+
+instance FunctorLeft (,,) where
+  lmap f ~(e, a, r) = (e, f a, r)
+
+instance FunctorRight (,,) where
+  rmap f ~(e, a, r) = (e, a, f r)
+
+instance FstFunctor (,,) where
+  fstmap f ~(a, b, c) = (f a, b, c)
+
+instance Trifunctor (,,) where
+  trimap f g h ~(a, b, c) = (f a, g b, h c)
+
